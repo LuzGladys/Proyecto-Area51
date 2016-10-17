@@ -99,7 +99,7 @@ public class ListFragment extends Fragment {
                 viewListElement.setTag(noteViewHolder);
             }
             final Note note = getItem(position);
-            noteViewHolder.textViewDate.setText(String.valueOf(note.getCreationTimestamp()));
+            noteViewHolder.textViewDate.setText(note.getCreationTimestamp());
             noteViewHolder.textViewTitle.setText(note.getTitle());
             return viewListElement;
         }
