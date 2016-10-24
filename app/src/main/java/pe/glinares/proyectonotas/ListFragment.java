@@ -6,6 +6,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -27,6 +30,10 @@ public class ListFragment extends Fragment {
 
     private ListFragmentInterface listFragmentInterface;
 
+    private NoteArrayAdapter noteArrayAdapter;
+
+    private SQLiteManager sqLiteManager;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -38,17 +45,47 @@ public class ListFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        final NoteArrayAdapter noteArrayAdapter = new NoteArrayAdapter(getActivity(), createTestNotes(100));
+        setHasOptionsMenu(true);
+        sqLiteManager = SQLiteManager.getInstance(getActivity());
+        //noteArrayAdapter = new NoteArrayAdapter(getActivity(), createTestNotes(100));
+        noteArrayAdapter = new NoteArrayAdapter(getContext(), sqLiteManager.getNotes());
         listViewItems.setAdapter(noteArrayAdapter);
         listViewItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (listFragmentInterface != null) {
-                    final Note note = ((NoteArrayAdapter) listViewItems.getAdapter()).getItem(position);
+                    //final Note note = ((NoteArrayAdapter) listViewItems.getAdapter()).getItem(position);
+                    final Note note = noteArrayAdapter.getItem(position);
                     listFragmentInterface.onNoteSelected(note);
                 }
             }
         });
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.fragment_list, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_add_note:
+                final String title = "Title";
+                final String content = "Content";
+                final long creationTimestamp = System.currentTimeMillis();
+                final long modificationTimestamp = System.currentTimeMillis();
+                final long id = sqLiteManager.insertNote(new Note(-1, title, content, creationTimestamp, modificationTimestamp));
+                final Note note = new Note(id, title, content, creationTimestamp, modificationTimestamp);
+                noteArrayAdapter.add(note);
+                return true;
+            case R.id.action_edit_note:
+                return true;
+//            case R.id.action_delete_note:
+//                return true;
+            default:
+                return false;
+        }
     }
 
     public void setListFragmentInterface(ListFragmentInterface listFragmentInterface) {
@@ -62,6 +99,7 @@ public class ListFragment extends Fragment {
                     i + 1,
                     "Title " + (i + 1),
                     "This is the content of the note " + (i + 1) + ".",
+                    System.currentTimeMillis(),
                     System.currentTimeMillis()
             );
             notes.add(note);
@@ -73,13 +111,14 @@ public class ListFragment extends Fragment {
 
         public static final String TAG = "NoteArrayAdapter";
 
-        NoteArrayAdapter(final Context context, final List<Note> notes) {
+        public NoteArrayAdapter(final Context context, final List<Note> notes) {
             super(context, 0, notes);
         }
 
         private static class NoteViewHolder {
             private TextView textViewDate;
             private TextView textViewTitle;
+            //private TextView textViewContent;
         }
 
         @Override
@@ -96,11 +135,13 @@ public class ListFragment extends Fragment {
                 noteViewHolder = new NoteViewHolder();
                 noteViewHolder.textViewDate = (TextView) viewListElement.findViewById(R.id.textview_date);
                 noteViewHolder.textViewTitle = (TextView) viewListElement.findViewById(R.id.textview_title);
+                //noteViewHolder.textViewContent = (TextView) viewListElement.findViewById(R.id.textview_content);
                 viewListElement.setTag(noteViewHolder);
             }
             final Note note = getItem(position);
             noteViewHolder.textViewDate.setText(note.getCreationTimestamp());
             noteViewHolder.textViewTitle.setText(note.getTitle());
+            //noteViewHolder.textViewContent.setText(note.getContent());
             return viewListElement;
         }
     }

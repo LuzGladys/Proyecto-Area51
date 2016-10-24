@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">ProyectoNotas</string>
+    <string name="add_note">Agregar nota</string>
+    <string name="edit_note">Editar nota</string>
+    <string name="delete_note">Eliminar nota</string>
 </resources>

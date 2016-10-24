@@ -33,7 +33,6 @@ public class MainActivity extends AppCompatActivity implements ListFragment.List
         }
 
         if (savedInstanceState == null) {
-            //Toast.makeText(MainActivity.this, "savedInstanceState == null", Toast.LENGTH_SHORT).show();
             final ListFragment listFragment = new ListFragment();
             fragmentManager
                     .beginTransaction()
@@ -41,7 +40,6 @@ public class MainActivity extends AppCompatActivity implements ListFragment.List
                     .commit();
             listFragment.setListFragmentInterface(this);
         } else {
-            //Toast.makeText(MainActivity.this, "savedInstanceState != null", Toast.LENGTH_SHORT).show();
             final Fragment fragment = fragmentManager.findFragmentByTag(LIST_FRAGMENT_TAG);
             if (fragment != null) {
                 ((ListFragment) fragment).setListFragmentInterface(this);
