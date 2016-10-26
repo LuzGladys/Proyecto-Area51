@@ -1,9 +1,11 @@
 package pe.glinares.proyectonotas;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -60,6 +62,41 @@ public class ListFragment extends Fragment {
                 }
             }
         });
+
+        listViewItems.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, final int position, long id) {
+                if (listFragmentInterface != null) {
+                    AlertDialog.Builder adb=new AlertDialog.Builder(getActivity());
+                    adb.setTitle(noteArrayAdapter.getItem(position).getTitle());
+                    adb.setMessage("Selecciona la acción a realizar.");
+                    adb.setPositiveButton("Editar", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface adb, int id) {
+                            editar();
+                        }
+                    });
+                    adb.setNegativeButton("Eliminar", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface adb, int id) {
+                            eliminar(position);
+                        }
+                    });
+                    adb.show();
+                }
+                return true;
+            }
+        });
+    }
+
+    private void editar(){
+
+    }
+
+    private void eliminar(int position){
+        final Note note = noteArrayAdapter.getItem(position);
+        boolean isDeleted = sqLiteManager.deleteNote(note.getId());
+        if(isDeleted){
+            noteArrayAdapter.remove(note);
+        }
     }
 
     @Override
@@ -144,6 +181,7 @@ public class ListFragment extends Fragment {
             //noteViewHolder.textViewContent.setText(note.getContent());
             return viewListElement;
         }
+
     }
 
     public interface ListFragmentInterface {
