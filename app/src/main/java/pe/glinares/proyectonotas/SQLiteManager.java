@@ -45,9 +45,15 @@ public class SQLiteManager extends SQLiteOpenHelper {
         return getWritableDatabase().insert("notes", null, contentValues);
     }
 
-    public void deleteNote(String id){
-        getWritableDatabase().execSQL("DELETE FROM notes WHERE _id= '" + id + "'");
-        getWritableDatabase().close();
+    public boolean deleteNote(long idNote) {
+        return getWritableDatabase().delete("notes", "_id=" + idNote, null) > 0;
+    }
+
+    public boolean updateNote(final Note note){
+        final ContentValues contentValues = new ContentValues();
+        contentValues.put("title", note.getTitle());
+        contentValues.put("content", note.getContent());
+        return getWritableDatabase().update("notes", contentValues, "_id=" + note.getId(), null) > 0;
     }
 
     public ArrayList<Note> getNotes() {
