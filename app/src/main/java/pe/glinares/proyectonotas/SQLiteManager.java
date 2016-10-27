@@ -56,6 +56,13 @@ public class SQLiteManager extends SQLiteOpenHelper {
         return getWritableDatabase().update("notes", contentValues, "_id=" + note.getId(), null) > 0;
     }
 
+    public Note getNote(long idNote){
+        final Cursor queryCursor = getReadableDatabase().rawQuery("SELECT * FROM notes WHERE _id=?", new String[] {String.valueOf(idNote)});
+        S
+        final Note note = new Note();
+
+    }
+
     public ArrayList<Note> getNotes() {
         final Cursor queryCursor = getReadableDatabase().rawQuery("SELECT * FROM notes", null);
         final ArrayList<Note> notes = new ArrayList<>();

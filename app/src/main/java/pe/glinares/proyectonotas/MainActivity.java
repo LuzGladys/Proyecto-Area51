@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements ListFragment.List
             final ListFragment listFragment = new ListFragment();
             fragmentManager
                     .beginTransaction()
+                    .addToBackStack(LIST_FRAGMENT_TAG)
                     .replace(R.id.container, listFragment, LIST_FRAGMENT_TAG)
                     .commit();
             listFragment.setListFragmentInterface(this);

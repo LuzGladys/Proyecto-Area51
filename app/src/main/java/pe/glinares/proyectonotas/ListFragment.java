@@ -18,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,7 +51,7 @@ public class ListFragment extends Fragment {
         setHasOptionsMenu(true);
         sqLiteManager = SQLiteManager.getInstance(getActivity());
         //noteArrayAdapter = new NoteArrayAdapter(getActivity(), createTestNotes(100));
-        noteArrayAdapter = new NoteArrayAdapter(getContext(), sqLiteManager.getNotes());
+        noteArrayAdapter = new NoteArrayAdapter(getContext(), createTestNotes(100));//sqLiteManager.getNotes()
         listViewItems.setAdapter(noteArrayAdapter);
         listViewItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -113,7 +114,8 @@ public class ListFragment extends Fragment {
                 final long creationTimestamp = System.currentTimeMillis();
                 final long modificationTimestamp = System.currentTimeMillis();
                 final long id = sqLiteManager.insertNote(new Note(-1, title, content, creationTimestamp, modificationTimestamp));
-                final Note note = new Note(id, title, content, creationTimestamp, modificationTimestamp);
+                System.out.println("id:"+id);
+                final Note note = new Note(id, title + " "+ String.valueOf(id), content, creationTimestamp, modificationTimestamp);
                 noteArrayAdapter.add(note);
                 return true;
             case R.id.action_edit_note:
