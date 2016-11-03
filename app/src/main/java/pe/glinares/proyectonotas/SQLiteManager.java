@@ -27,7 +27,7 @@ public class SQLiteManager extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        final String sql = "CREATE TABLE notes (_id INTEGER PRIMARY KEY, title TEXT, content TEXT, creationTimestamp INTEGER, modificationTimestamp INTEGER)";
+        final String sql = "CREATE TABLE notes (_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title TEXT, content TEXT, creationTimestamp INTEGER, modificationTimestamp INTEGER)";
         db.execSQL(sql);
     }
 
@@ -58,9 +58,16 @@ public class SQLiteManager extends SQLiteOpenHelper {
 
     public Note getNote(long idNote){
         final Cursor queryCursor = getReadableDatabase().rawQuery("SELECT * FROM notes WHERE _id=?", new String[] {String.valueOf(idNote)});
-        S
-        final Note note = new Note();
+        queryCursor.moveToFirst();
+        final long id = queryCursor.getLong(queryCursor.getColumnIndex("_id"));
+        final String title = queryCursor.getString(queryCursor.getColumnIndex("title"));
+        final String content = queryCursor.getString(queryCursor.getColumnIndex("content"));
+        final long creationTimestamp = queryCursor.getLong(queryCursor.getColumnIndex("creationTimestamp"));
+        final long modificationTimestamp = queryCursor.getLong(queryCursor.getColumnIndex("modificationTimestamp"));
+        final Note note = new Note(id, title, content, creationTimestamp, modificationTimestamp);
 
+        queryCursor.close();
+        return note;
     }
 
     public ArrayList<Note> getNotes() {

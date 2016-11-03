@@ -8,16 +8,23 @@ import java.util.Date;
  */
 public class Note {
 
-    private final long id;
-    private final String title;
-    private final String content;
-    private final long creationTimestamp;
-    private final long modificationTimestamp;
+    private long id;
+    private String title;
+    private String content;
+    private long creationTimestamp;
+    private long modificationTimestamp;
 
     private final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
-    public Note(long id, String title, String content, long creationTimestamp,long modificationTimestamp) {
+    public Note(long id,String title, String content, long creationTimestamp,long modificationTimestamp) {
         this.id = id;
+        this.title = title;
+        this.content = content;
+        this.creationTimestamp = creationTimestamp;
+        this.modificationTimestamp = modificationTimestamp;
+    }
+
+    public Note(String title, String content, long creationTimestamp,long modificationTimestamp) {
         this.title = title;
         this.content = content;
         this.creationTimestamp = creationTimestamp;

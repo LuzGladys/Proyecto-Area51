@@ -51,7 +51,7 @@ public class ListFragment extends Fragment {
         setHasOptionsMenu(true);
         sqLiteManager = SQLiteManager.getInstance(getActivity());
         //noteArrayAdapter = new NoteArrayAdapter(getActivity(), createTestNotes(100));
-        noteArrayAdapter = new NoteArrayAdapter(getContext(), createTestNotes(100));//sqLiteManager.getNotes()
+        noteArrayAdapter = new NoteArrayAdapter(getContext(), sqLiteManager.getNotes());//sqLiteManager.getNotes()
         listViewItems.setAdapter(noteArrayAdapter);
         listViewItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -73,7 +73,9 @@ public class ListFragment extends Fragment {
                     adb.setMessage("Selecciona la acción a realizar.");
                     adb.setPositiveButton("Editar", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface adb, int id) {
-                            editar();
+                            final Note note = noteArrayAdapter.getItem(position);
+                            listFragmentInterface.onNoteSelectedtoEdit(note);
+                            noteArrayAdapter.notifyDataSetChanged();
                         }
                     });
                     adb.setNegativeButton("Eliminar", new DialogInterface.OnClickListener() {
@@ -86,10 +88,6 @@ public class ListFragment extends Fragment {
                 return true;
             }
         });
-    }
-
-    private void editar(){
-
     }
 
     private void eliminar(int position){
@@ -109,16 +107,20 @@ public class ListFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add_note:
-                final String title = "Title";
-                final String content = "Content";
-                final long creationTimestamp = System.currentTimeMillis();
-                final long modificationTimestamp = System.currentTimeMillis();
-                final long id = sqLiteManager.insertNote(new Note(-1, title, content, creationTimestamp, modificationTimestamp));
-                System.out.println("id:"+id);
-                final Note note = new Note(id, title + " "+ String.valueOf(id), content, creationTimestamp, modificationTimestamp);
-                noteArrayAdapter.add(note);
-                return true;
-            case R.id.action_edit_note:
+                if (listFragmentInterface != null) {
+                    //final Note note = ((NoteArrayAdapter) listViewItems.getAdapter()).getItem(position);
+                    //final Note note = noteArrayAdapter.getItem(position);
+                    listFragmentInterface.onNoteNew();
+                }
+                noteArrayAdapter.notifyDataSetChanged();
+//                final String title = "Title";
+//                final String content = "Content";
+//                final long creationTimestamp = System.currentTimeMillis();
+//                final long modificationTimestamp = System.currentTimeMillis();
+//                final long id = sqLiteManager.insertNote(new Note(title, content, creationTimestamp, modificationTimestamp));
+//                System.out.println("id:"+id);
+//                final Note note = new Note(id, title + " "+ String.valueOf(id), content, creationTimestamp, modificationTimestamp);
+//                noteArrayAdapter.add(note);
                 return true;
 //            case R.id.action_delete_note:
 //                return true;
@@ -131,7 +133,7 @@ public class ListFragment extends Fragment {
         this.listFragmentInterface = listFragmentInterface;
     }
 
-    private List<Note> createTestNotes(final int size) {
+/*    private List<Note> createTestNotes(final int size) {
         final List<Note> notes = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
             final Note note = new Note(
@@ -144,7 +146,7 @@ public class ListFragment extends Fragment {
             notes.add(note);
         }
         return notes;
-    }
+    }*/
 
     public static class NoteArrayAdapter extends ArrayAdapter<Note> {
 
@@ -187,8 +189,8 @@ public class ListFragment extends Fragment {
     }
 
     public interface ListFragmentInterface {
-
         void onNoteSelected(final Note note);
-
+        void onNoteSelectedtoEdit(final Note note);
+        void onNoteNew();
     }
 }

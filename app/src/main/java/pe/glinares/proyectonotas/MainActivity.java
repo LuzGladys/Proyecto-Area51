@@ -8,12 +8,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity implements ListFragment.ListFragmentInterface {
+public class MainActivity extends AppCompatActivity implements ListFragment.ListFragmentInterface{
 
     private FragmentManager fragmentManager;
 
     private static final String LIST_FRAGMENT_TAG = "list_fragment";
     private static final String CONTENT_FRAGMENT_TAG = "content_fragment";
+    private static final String EDIT_FRAGMENT_TAG = "edit_fragment";
 
     private boolean isTablet;
 
@@ -60,6 +61,39 @@ public class MainActivity extends AppCompatActivity implements ListFragment.List
             fragmentManager.beginTransaction()
                     .addToBackStack(null)
                     .replace(R.id.container, contentFragment, CONTENT_FRAGMENT_TAG)
+                    .commit();
+        }
+    }
+
+    @Override
+    public void onNoteSelectedtoEdit(Note note) {
+        final EditFragment editFragment = EditFragment.newInstance(note);
+        if (isTablet) {
+            fragmentManager.beginTransaction()
+                    .addToBackStack(null)
+                    .replace(R.id.container2, editFragment, EDIT_FRAGMENT_TAG)
+                    .commit();
+        }else{
+            fragmentManager.beginTransaction()
+                    .addToBackStack(null)
+                    .replace(R.id.container, editFragment, EDIT_FRAGMENT_TAG)
+                    .commit();
+        }
+
+    }
+
+    @Override
+    public void onNoteNew() {
+        final EditFragment editFragment = EditFragment.newInstance();
+        if (isTablet) {
+            fragmentManager.beginTransaction()
+                    .addToBackStack(null)
+                    .replace(R.id.container2, editFragment, EDIT_FRAGMENT_TAG)
+                    .commit();
+        }else{
+            fragmentManager.beginTransaction()
+                    .addToBackStack(null)
+                    .replace(R.id.container, editFragment, EDIT_FRAGMENT_TAG)
                     .commit();
         }
     }
